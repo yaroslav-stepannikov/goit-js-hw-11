@@ -81,7 +81,7 @@ main:has(.back-link) {
   background-color: #6c8cff;
 }
 
-.list {
+.gallery {
   margin: 24px auto;
   display: flex;
   max-width: 1200px;

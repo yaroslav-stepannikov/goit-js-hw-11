@@ -1,10 +1,10 @@
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-const galleryContainer = document.querySelector('.list');
+const galleryContainer = document.querySelector('.gallery');
 const loader = document.querySelector('.loader');
 
-const lightbox = new SimpleLightbox('.list a', {
+const lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
 });

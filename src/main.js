@@ -16,6 +16,7 @@ const instance = axios.create({
     image_type: 'photo',
     orientation: 'horizontal',
     safesearch: true,
+    per_page: 18,
   },
 });
 
@@ -61,18 +62,26 @@ function createMarkup(arr) {
     alt="${tags}"
     />
     </a>
-    <ul class="gallery-content-list">
-    <li class="gallery-content-item">
-    <h3 class="gallery-content-title">Likes</h3>
-    <p class="gallery-title-value">${likes}</p>
-    <h3 class="gallery-content-title">Views</h3>
-    <p class="gallery-title-value">${views}</p>
-     <h3 class="gallery-content-title">Comments</h3>
-    <p class="gallery-title-value">${comments}</p>
-     <h3 class="gallery-content-title">Downloads</h3>
-    <p class="gallery-title-value">${downloads}</p>
-    </li>
-    </ul>
+      <ul class="gallery-content-list">
+      <li class="gallery-content-item">
+      <div class="content-wrapper">
+        <h3 class="gallery-content-title">Likes</h3>
+        <p class="gallery-title-value">${likes}</p>
+      </div>
+      <div class="content-wrapper">
+        <h3 class="gallery-content-title">Views</h3>
+        <p class="gallery-title-value">${views}</p>
+      </div>
+       <div class="content-wrapper">
+         <h3 class="gallery-content-title">Comments</h3>
+        <p class="gallery-title-value">${comments}</p>
+       </div>
+       <div class="content-wrapper">
+         <h3 class="gallery-content-title">Downloads</h3>
+        <p class="gallery-title-value">${downloads}</p>
+       </div>
+      </li>
+      </ul>
     </li>
     `
     )

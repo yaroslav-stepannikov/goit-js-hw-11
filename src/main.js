@@ -1,89 +1,54 @@
-import axios from 'axios';
-import './css/base.css';
+import { getImagesByQuery } from './js/pixabay-api';
+import {
+  createGallery,
+  clearGallery,
+  showLoader,
+  hideLoader,
+} from './js/render-functions';
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
 
-const BASE_URL = 'https://pixabay.com/api/';
-const API_KEY = '52544732-939bdd7f86cf76540eb760f6b';
-
-const list = document.querySelector('.list');
 const form = document.querySelector('.form');
-const submitBtn = document.querySelector('.submit-btn');
-const searchText = form[`search-text`];
 
-const instance = axios.create({
-  baseURL: 'https://pixabay.com/api/',
-  params: {
-    key: API_KEY,
-    image_type: 'photo',
-    orientation: 'horizontal',
-    safesearch: true,
-    per_page: 18,
-  },
-});
-
-form.addEventListener('submit', handlerSubmit);
-
-function handlerSubmit(event) {
+form.addEventListener('submit', event => {
   event.preventDefault();
 
-  const searchText = event.target.elements[`search-text`].value
-    .toLowerCase()
-    .trim();
-  if (!searchText) return;
-  instance
-    .get('', { params: { q: searchText } })
-    .then(({ data }) => {
-      console.log(data.hits);
+  const searchText = form.elements['search-text'].value.trim();
 
-      list.innerHTML = '';
-      list.innerHTML = createMarkup(data.hits);
-    })
-    .catch(error => {
-      console.log('Error:', error);
+  if (!searchText) {
+    iziToast.warning({
+      title: 'Warning',
+      message: 'Please enter a search query',
+      timeout: 3000,
+      position: 'topRight',
     });
-}
+    return;
+  }
 
-function createMarkup(arr) {
-  return arr
-    .map(
-      ({
-        webformatURL,
-        largeImageURL,
-        tags,
-        likes,
-        views,
-        comments,
-        downloads,
-      }) => `
-    <li class="gallery-item">
-    <a class="gallery-link" href="${largeImageURL}">
-    <img 
-    class="gallery-image"
-    src="${webformatURL}"
-    alt="${tags}"
-    />
-    </a>
-      <ul class="gallery-content-list">
-      <li class="gallery-content-item">
-      <div class="content-wrapper">
-        <h3 class="gallery-content-title">Likes</h3>
-        <p class="gallery-title-value">${likes}</p>
-      </div>
-      <div class="content-wrapper">
-        <h3 class="gallery-content-title">Views</h3>
-        <p class="gallery-title-value">${views}</p>
-      </div>
-       <div class="content-wrapper">
-         <h3 class="gallery-content-title">Comments</h3>
-        <p class="gallery-title-value">${comments}</p>
-       </div>
-       <div class="content-wrapper">
-         <h3 class="gallery-content-title">Downloads</h3>
-        <p class="gallery-title-value">${downloads}</p>
-       </div>
-      </li>
-      </ul>
-    </li>
-    `
-    )
-    .join('');
-}
+  clearGallery();
+  showLoader();
+
+  getImagesByQuery(searchText).then(data => {
+    hideLoader();
+
+    if (!data.hits || data.hits.length === 0) {
+      iziToast.info({
+        title: 'No results',
+        message:
+          'Sorry, there are no images matching your search query. Please try again!',
+        timeout: 4000,
+        position: 'topRight',
+      });
+      return;
+    }
+
+    createGallery(data.hits);
+
+    iziToast.success({
+      title: 'Success',
+      message: `Found ${data.hits.length} images`,
+      timeout: 3000,
+      position: 'topRight',
+    });
+  });
+});
